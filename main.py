@@ -87,14 +87,14 @@ with open('words_to_hyphenate.txt') as fi:
     for line in fo:
         user_word_list.append(line.rstrip())
 
-
+all_match_subwords = list() # a list of all given words matching subwords
 for wo in user_word_list:
     """
     our matching subwords dataset needs to be a list of lists, because the
     position within the words is important
     e.g. banana, lillies
     """
-    match_subwords = list()
+    match_subwords = [None] * len(wo)
     end_a = wo[-1]
     for wo_i, wo_a in wo:
         max_rem_l = len(wo) - i + 1
@@ -106,8 +106,7 @@ for wo in user_word_list:
                 for sw_size, sw_val in enumerate(prefixes["."+wo_a]):
                     for pre_sw_sized in prefixes["."+wo_a][sw_size]:
                         if wo[:sw_size+1] == re.sub(r"[^a-zA-Z]+", '', pre_sw_sized):
-                            # need to clean up match_subwords
-                            match_subwords.append(wo[:sw_size+1]
+                            match_subwords[wo_i].append(wo[:sw_size+1]
             else:
                 for sw_size, sw_val in enumerate(prefixes["."+wo_a]):
                     if max_rem_l < sw_size+1: # sw_size is 0-based
@@ -115,8 +114,7 @@ for wo in user_word_list:
                     else:
                         for pre_sw_sized in prefixes["."+wo_a][sw_size]:
                             if wo[:sw_size+1] == re.sub(r"[^a-zA-Z]+", '', pre_sw_sized):
-                                # need to clean up match_subwords
-                                match_subwords.append(wo[:sw_size+1]
+                                match_subwords[wo_i].append(wo[:sw_size+1]
         """
             Subwords
         """
@@ -124,8 +122,7 @@ for wo in user_word_list:
             for sw_size, sw_val in enumerate(subwords[wo_a]):
                 for pre_sw_sized in subwords[wo_a][sw_size]:
                     if wo[wo_i:] == re.sub(r"[^a-zA-Z]+", '', pre_sw_sized):
-                        # need to clean up match_subwords
-                        match_subwords.append(wo[:sw_size+1]
+                        match_subwords[wo_i].append(wo[:sw_size+1]
         else:
             for sw_size, sw_val in enumerate(subwords[wo_a]):
                 if max_rem_l < sw_size+1: # sw_size is 0-based
@@ -133,8 +130,7 @@ for wo in user_word_list:
                 else:
                     for pre_sw_sized in subwords[wo_a][sw_size]:
                         if wo[wo_i:] == re.sub(r"[^a-zA-Z]+", '', pre_sw_sized):
-                            # need to clean up match_subwords
-                            match_subwords.append(wo[:sw_size+1]
+                            match_subwords[wo_i].append(wo[:sw_size+1]
         """
             Suffixes
         """
@@ -146,6 +142,28 @@ for wo in user_word_list:
                     for pre_sw_sized in suffixes[end_a+"."][sw_size]:
                         if wo[wo_i:] == re.sub(r"[^a-zA-Z]+", '', pre_sw_sized):
                             # need to clean up match_subwords
-                            match_subwords.append(wo[:sw_size+1]
+                            match_subwords[wo_i].append(wo[:sw_size+1]
 
+    all_match_subwords.extend(match_subwords)
     print(match_subwords)
+
+"""
+Selection of the actual hyphenated combos from the match_word list.
+"""
+final_words = list()
+for wo_index, wo in enumerate(user_word_list):
+    hyphen_scores = [0] * len(wo)
+    # for m_sws in all_match_subwords[wo_index]:  #iterate matching swords for one word
+    for m_sws in all_match_subwords[wo_index]:
+        for mw_chr in m_sws:  # iterate characters of one subword
+            if mw_chr.isnumeric():
+                if int(mw_chr) > hyphen_scores[0000]:
+                    hyphen_scores[0000] = int(mw_chr)
+            elif mw_chr.isalpha():
+                pass
+
+    final_words.append(".......")
+
+with open("output.txt", "w+") as answers:
+    for i in final_words:
+        answers.write(final_words[i])
