@@ -98,12 +98,54 @@ for wo in user_word_list:
     end_a = wo[-1]
     for wo_i, wo_a in wo:
         max_rem_l = len(wo) - i + 1
+        """
+            Prefixes
+        """
         if wo_i == 0:
-            if max_rem_l >= len(prefixes[wo_i]): # do them all
-                pass
+            if max_rem_l >= len(prefixes["."+wo_i]): # do them all
+                for sw_size, sw_val in enumerate(prefixes["."+wo_a]):
+                    for pre_sw_sized in prefixes["."+wo_a][sw_size]:
+                        if wo[:sw_size+1] == re.sub(r"[^a-zA-Z]+", '', pre_sw_sized):
+                            # need to clean up match_subwords
+                            match_subwords.append(wo[:sw_size+1]
             else:
-                pass
-        # look at subwords here that dont violate length
-        # look at suffixes that dont violate length left here
-        for suf in suffixes[end_a][max_rem_l]:
-            if
+                for sw_size, sw_val in enumerate(prefixes["."+wo_a]):
+                    if max_rem_l < sw_size+1: # sw_size is 0-based
+                        pass  # ignore cases where we have less letters than sw's need
+                    else:
+                        for pre_sw_sized in prefixes["."+wo_a][sw_size]:
+                            if wo[:sw_size+1] == re.sub(r"[^a-zA-Z]+", '', pre_sw_sized):
+                                # need to clean up match_subwords
+                                match_subwords.append(wo[:sw_size+1]
+        """
+            Subwords
+        """
+        if max_rem_l >= len(subwords[wo_i]): # do them all
+            for sw_size, sw_val in enumerate(subwords[wo_a]):
+                for pre_sw_sized in subwords[wo_a][sw_size]:
+                    if wo[wo_i:] == re.sub(r"[^a-zA-Z]+", '', pre_sw_sized):
+                        # need to clean up match_subwords
+                        match_subwords.append(wo[:sw_size+1]
+        else:
+            for sw_size, sw_val in enumerate(subwords[wo_a]):
+                if max_rem_l < sw_size+1: # sw_size is 0-based
+                    pass  # ignore cases where we have less letters than sw's need
+                else:
+                    for pre_sw_sized in subwords[wo_a][sw_size]:
+                        if wo[wo_i:] == re.sub(r"[^a-zA-Z]+", '', pre_sw_sized):
+                            # need to clean up match_subwords
+                            match_subwords.append(wo[:sw_size+1]
+        """
+            Suffixes
+        """
+        if max_rem_l <= len(suffixes[end_a+"."]):
+            for sw_size, sw_val in enumerate(suffixes[end_a+"."]):
+                if max_rem_l < sw_size+1: # sw_size is 0-based
+                    pass  # ignore cases where we have less letters than sw's need
+                else:
+                    for pre_sw_sized in suffixes[end_a+"."][sw_size]:
+                        if wo[wo_i:] == re.sub(r"[^a-zA-Z]+", '', pre_sw_sized):
+                            # need to clean up match_subwords
+                            match_subwords.append(wo[:sw_size+1]
+
+    print(match_subwords)
