@@ -78,10 +78,32 @@ with open('patterns.txt') as fo:
             true_subword = re.sub(r"[^a-zA-Z]+", '', line)
             size = len(true_subword)
             subwords[true_subword[:1]][size-1].append(line)
-    print("\n-------------------------------------------------------------\n")
-    print(prefixes)
-    print("\n-------------------------------------------------------------\n")
-    print(subwords)
-    print("\n-------------------------------------------------------------\n")
-    print(suffixes)
-    print("\n-------------------------------------------------------------\n")
+
+"""
+Now reading in the words that need to be hyphenated
+"""
+user_word_list = list()
+with open('words_to_hyphenate.txt') as fi:
+    for line in fo:
+        user_word_list.append(line.rstrip())
+
+
+for wo in user_word_list:
+    """
+    our matching subwords dataset needs to be a list of lists, because the
+    position within the words is important
+    e.g. banana, lillies
+    """
+    match_subwords = list()
+    end_a = wo[-1]
+    for wo_i, wo_a in wo:
+        max_rem_l = len(wo) - i + 1
+        if wo_i == 0:
+            if max_rem_l >= len(prefixes[wo_i]): # do them all
+                pass
+            else:
+                pass
+        # look at subwords here that dont violate length
+        # look at suffixes that dont violate length left here
+        for suf in suffixes[end_a][max_rem_l]:
+            if
